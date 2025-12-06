@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Resultado - Exploração do Oceano</title>
+
+  <!-- CSS: estilo inspirado na sua página principal (cores, cards, sombras) -->
+  <style>
+    :root{
+      --bg: #022b3a;
+      --accent: #ffd166;
+      --card: #053f4a;
+      --muted: #8fd3e6;
+      --text: #e8fbff;
+      --glass: rgba(255,255,255,0.03);
+      --transition: 250ms ease;
+    }
+
+    /* Reset / base */
+    *{ box-sizing: border-box; }
+    html,body{ height:100%; margin:0; }
+    body{
+      font-family: "Helvetica Neue", Arial, sans-serif;
+      background: linear-gradient(180deg, var(--bg), #001f26 60%);
+      color: var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding: 40px 20px;
+      transition: background var(--transition), color var(--transition);
+    }
+
+    h1{ margin:0 0 6px; font-size:1.8rem; letter-spacing: -0.01em; }
+    h2{ margin:0 0 8px; font-size:1.3rem; color:var(--muted); }
+    p { margin: 0 0 18px; color: rgba(232,251,255,0.95); }
+
+    /* Card central (mantive a estrutura .card do segundo template) */
+    .card{
+      display:inline-block;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), var(--glass));
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.45);
+      text-align:center;
+      max-width: 420px;
+      width: 100%;
+      transition: transform var(--transition);
+    }
+    .card:hover{ transform: translateY(-4px); }
+
+    /* Imagem dentro do card - tamanho controlado e responsivo */
+    .card img{
+      width: 100%;
+      max-width: 360px;
+      height: 220px;
+      object-fit: cover;
+      border-radius: 12px;
+      display:block;
+      margin: 0 auto 16px;
+      transition: transform var(--transition);
+    }
+    .card img:hover{ transform: scale(1.03); }
+
+    /* Botão grande com estilo do site */
+    button{
+      padding: 12px 22px;
+      background: linear-gradient(180deg, var(--accent), #ffb03b);
+      border: 0;
+      border-radius: 10px;
+      color: #002;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+    button:hover{ transform: translateY(-2px); }
+
+    /* Área do header com emoji e título (mantendo os elementos da estrutura segundo template) */
+    .top{
+      margin-bottom: 18px;
+    }
+    .emo{
+      font-size: 3rem;
+      margin-bottom: 6px;
+    }
+
+    /* Responsividade: em telas menores reduz altura da imagem e do card */
+    @media (max-width:560px){
+      .card img { height: 160px; }
+      .card { padding: 16px; border-radius: 12px; }
+      body { padding: 24px 12px; }
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <div class="top" style="text-align:center;">
+      <h1>🌊 Emoção detectada:</h1>
+      <h2 id="emocaoTitle">Processando...</h2>
+      <p id="confTitle"></p>
+    </div>
+
+    <div class="card" role="region" aria-label="Card com imagem relacionada à emoção">
+      <img id="imagemEmocao" alt="Imagem relacionada à emoção" />
+      <button onclick="voltar()">Voltar</button>
+    </div>
+  </div>
+
+  <script>
+    /* --- lógica original (mantida) --- */
+    const imagensPorEmocao = {
+      feliz: [
+        'static/mar_feliz/imagem_feliz.png',
+        'static/mar_feliz/imagem_feliz2.png',
+      ],
+      triste: [
+        'static/mar_triste/imagem_triste.png',
+        'static/mar_triste/imagem_triste2.png',
+      ],
+      neutro: [
+        'static/mar_neutro/imagem_neutra.png',
+        'static/mar_neutro/imagem_neutra2.png', 
+      ]
+    };
+
+    const traducoes = {
+      happy: 'feliz',
+      sad: 'triste',
+      neutral: 'neutro',
+      angry: 'triste',
+      fearful: 'triste',
+      disgusted: 'triste',
+      surprised: 'feliz'
+    };
+
+    function getQueryParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name);
+    }
+
+    function imagemAleatoria(lista) {
+      return lista[Math.floor(Math.random() * lista.length)];
+    }
+
+    const emocaoOriginal = getQueryParam('emocao') || 'neutral';
+    const conf = getQueryParam('conf') || '0';
+    const emocaoTraduzida = traducoes[emocaoOriginal] || 'nenhuma';
+
+    document.getElementById('emocaoTitle').innerText = emocaoTraduzida.charAt(0).toUpperCase() + emocaoTraduzida.slice(1);
+    document.getElementById('confTitle').innerText = `Confiança: ${conf}%`;
+
+    if (imagensPorEmocao[emocaoTraduzida] && imagensPorEmocao[emocaoTraduzida].length > 0) {
+      document.getElementById('imagemEmocao').src = imagemAleatoria(imagensPorEmocao[emocaoTraduzida]);
+      document.getElementById('imagemEmocao').alt = `Imagem relacionada à emoção ${emocaoTraduzida}`;
+    } else {
+      document.getElementById('imagemEmocao').style.display = 'none';
+    }
+
+    function voltar() {
+      window.location.href = 'index.html';
+    }
+  </script>
+</body>
+</html>
